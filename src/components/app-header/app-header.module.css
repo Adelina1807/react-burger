@@ -1,0 +1,15 @@
+.nav {
+  display: flex;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1280px;
+  margin: auto;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}

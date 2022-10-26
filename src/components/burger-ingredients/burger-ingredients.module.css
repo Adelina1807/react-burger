@@ -1,0 +1,23 @@
+.card {
+  list-style-type: none;
+  max-width: 272px;
+  margin-right: 24px;
+}
+
+.card:nth-of-type(2n) {
+  margin-right: 0;
+}
+
+.burger {
+  max-height: 716px;
+  overflow: scroll;
+}
+
+.burger::-webkit-scrollbar-track {
+  background-color: red;
+  border-radius: 4px;
+}
+
+.burger::-webkit-scrollbar-thumb {
+  border-radius: 0;
+}
