@@ -13,3 +13,18 @@
   display: flex;
   justify-content: center;
 }
+
+.icon {
+  display: flex;
+  align-self: center;
+}
+
+.icon:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.profile {
+  composes: icon;
+  justify-content: end;
+}

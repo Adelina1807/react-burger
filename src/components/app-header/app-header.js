@@ -16,23 +16,11 @@ class AppHeader extends React.Component {
       >
         <div className={styles.header}>
           <nav className={styles.nav}>
-            <div
-              style={{
-                display: "flex",
-                alignSelf: "center",
-              }}
-              className="ml-5 mr-5"
-            >
+            <div className={`${styles.icon} ml-5 mr-5`}>
               <BurgerIcon type="primary" />
               <p className="ml-2 text text_type_main-default">Конструктор</p>
             </div>
-            <div
-              style={{
-                display: "flex",
-                alignSelf: "center",
-              }}
-              className="ml-5 mr-5"
-            >
+            <div className={`${styles.icon} ml-5 mr-5`}>
               <ListIcon type="secondary" />
               <p className="ml-2 text text_type_main-default text_color_inactive">
                 Лента заказов
@@ -43,14 +31,7 @@ class AppHeader extends React.Component {
             <Logo />
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignSelf: "center",
-              justifyContent: "end",
-            }}
-            className="ml-5 mr-5"
-          >
+          <div className={`${styles.profile} ml-5 mr-5`}>
             <ProfileIcon type="secondary" />
             <p className=" ml-2 text text_type_main-default text_color_inactive">
               Личный кабинет
