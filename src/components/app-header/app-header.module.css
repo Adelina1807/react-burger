@@ -2,6 +2,10 @@
   display: flex;
 }
 
+.main {
+  background-color: #1c1c21;
+}
+
 .header {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -17,6 +21,14 @@
 .icon {
   display: flex;
   align-self: center;
+  gap: 9px;
+  text-decoration: none;
+  color: #f2f2f3;
+}
+
+.order {
+  composes: icon;
+  color: #8585ad;
 }
 
 .icon:hover {
@@ -27,4 +39,5 @@
 .profile {
   composes: icon;
   justify-content: end;
+  color: #8585ad;
 }
