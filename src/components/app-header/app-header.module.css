@@ -1,0 +1,43 @@
+.nav {
+  display: flex;
+}
+
+.main {
+  background-color: #1c1c21;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 1280px;
+  margin: auto;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.icon {
+  display: flex;
+  align-self: center;
+  gap: 9px;
+  text-decoration: none;
+  color: #f2f2f3;
+}
+
+.order {
+  composes: icon;
+  color: #8585ad;
+}
+
+.icon:hover {
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.profile {
+  composes: icon;
+  justify-content: end;
+  color: #8585ad;
+}
