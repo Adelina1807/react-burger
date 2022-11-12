@@ -5,7 +5,6 @@ import { DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import Modal from "../modal/modal";
 import ModalOverlay from "../modal-overlay/modal-overlay";
 
 function BurgerConstructor(props) {
