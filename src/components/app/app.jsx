@@ -1,23 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import styles from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { CART } from "../../utils/data";
 
-class App extends React.Component {
-  render() {
-    return (
-      <>
-        <AppHeader />
-        <main className={styles.main}>
-          <BurgerIngredients cart={CART} />
-          <BurgerConstructor cart={CART} />
-        </main>
-      </>
-    );
-  }
+function App() {
+  const url = "https://norma.nomoreparties.space/api/ingredients";
+
+  const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    const getIngredients = () => {
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => {
+          setIngredients(data.data);
+          console.log(data.data);
+        })
+        .catch((e) => console.log(e));
+    };
+
+    getIngredients();
+  }, []);
+
+  return (
+    <>
+      <AppHeader />
+      <main className={styles.main}>
+        <BurgerIngredients ingredients={ingredients} />
+        <BurgerConstructor ingredients={ingredients} />
+      </main>
+    </>
+  );
 }
 
 export default App;
