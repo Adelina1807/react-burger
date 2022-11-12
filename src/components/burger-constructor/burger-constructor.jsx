@@ -5,11 +5,13 @@ import { DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalOverlay from "../modal-overlay/modal-overlay";
+import Modal from "../modal/modal";
+import OrderDetails from "../order-details/order-details";
+import { typeIngredient } from "../../utils/prop-types";
 
 function BurgerConstructor(props) {
   const [open, setOpen] = useState(false);
-  const [popup, setPopup] = useState({});
+  const [popup, setPopup] = useState(null);
 
   const closeByEscape = (evt) => {
     if (evt.key === "Escape") {
@@ -33,13 +35,17 @@ function BurgerConstructor(props) {
     document.removeEventListener("keydown", closeByEscape);
   };
 
-  const bun = props.ingredients.find((ingredient) => ingredient.type === "bun");
-  const otherIngredients = props.ingredients.filter(
-    (ingredient) => ingredient.type !== "bun"
-  );
-  const sum = props.ingredients.reduce(function (previousValue, elem) {
-    return previousValue + elem.price;
-  }, 0);
+  const bun = React.useMemo(() => {
+    return props.ingredients.find((ingredient) => ingredient.type === "bun");
+  }, [props.ingredients]);
+  const otherIngredients = React.useMemo(() => {
+    return props.ingredients.filter((ingredient) => ingredient.type !== "bun");
+  }, [props.ingredients]);
+  const sum = React.useMemo(() => {
+    return otherIngredients.reduce(function (previousValue, elem) {
+      return previousValue + elem.price;
+    }, 0);
+  }, [otherIngredients]);
   if (props.ingredients.length === 0) {
     return null;
   }
@@ -81,7 +87,7 @@ function BurgerConstructor(props) {
           </div>
           <div className={`${styles.total} mt-10`}>
             <p className={`${styles.price} text text_type_digits-medium`}>
-              {sum}
+              {sum + bun.price * 2}
             </p>
             <CurrencyIcon type="primary" />
             <div className="ml-10">
@@ -93,33 +99,16 @@ function BurgerConstructor(props) {
         </div>
       </div>
       {open && (
-        <ModalOverlay
-          type="order"
-          info={popup}
-          close={closeModal}
-        ></ModalOverlay>
+        <Modal close={closeModal} title={false}>
+          <OrderDetails info={popup}></OrderDetails>
+        </Modal>
       )}
     </>
   );
 }
 
 BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string,
-      name: PropTypes.string,
-      type: PropTypes.string,
-      proteins: PropTypes.number,
-      fat: PropTypes.number,
-      carbohydrates: PropTypes.number,
-      calories: PropTypes.number,
-      price: PropTypes.number,
-      image: PropTypes.string,
-      image_mobile: PropTypes.string,
-      image_large: PropTypes.string,
-      __v: PropTypes.number,
-    }).isRequired
-  ).isRequired,
+  ingredients: PropTypes.arrayOf(typeIngredient),
 };
 
 export default BurgerConstructor;

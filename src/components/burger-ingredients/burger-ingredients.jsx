@@ -4,17 +4,13 @@ import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Counter } from "@ya.praktikum/react-developer-burger-ui-components";
-import ModalOverlay from "../modal-overlay/modal-overlay";
+import Modal from "../modal/modal";
+import IngredientDetails from "../ingredient-details/ingredient-details";
+import { typeIngredient } from "../../utils/prop-types";
 
 function BurgerIngredients(props) {
-  const [popup, setPopup] = useState({});
+  const [popup, setPopup] = useState(null);
   const [open, setOpen] = useState(false);
-
-  const closeByEscape = (evt) => {
-    if (evt.key === "Escape") {
-      closeModal();
-    }
-  };
 
   const openModal = (e) => {
     setOpen(true);
@@ -22,19 +18,23 @@ function BurgerIngredients(props) {
       return item._id === e.currentTarget.id;
     });
     setPopup(info);
-    document.addEventListener("keydown", closeByEscape);
   };
 
   const closeModal = () => {
     setOpen(false);
     setPopup({});
-    document.removeEventListener("keydown", closeByEscape);
   };
 
   const [current, setCurrent] = React.useState("bun");
-  const buns = props.ingredients.filter((item) => item.type === "bun");
-  const mains = props.ingredients.filter((item) => item.type === "main");
-  const sauces = props.ingredients.filter((item) => item.type === "sauce");
+  const buns = React.useMemo(() => {
+    return props.ingredients.filter((item) => item.type === "bun");
+  }, [props.ingredients]);
+  const mains = React.useMemo(() => {
+    return props.ingredients.filter((item) => item.type === "main");
+  }, [props.ingredients]);
+  const sauces = React.useMemo(() => {
+    return props.ingredients.filter((item) => item.type === "sauce");
+  }, [props.ingredients]);
   return (
     <>
       <div className={`${styles.section} mt-10`}>
@@ -55,30 +55,24 @@ function BurgerIngredients(props) {
           <ul className={`${styles.list} mt-6 ml-4 mb-10`}>
             {buns.map((bun) => {
               return (
-                <>
-                  <li
-                    className={styles.card}
-                    key={bun._id}
-                    id={bun._id}
-                    onClick={openModal}
-                  >
-                    <img
-                      src={bun.image}
-                      alt={bun.name}
-                      className="ml-4 mr-4"
-                    ></img>
-                    <div className={`${styles.price} mt-1 mb-1`}>
-                      <p className="text text_type_digits-default mr-1">
-                        {bun.price}
-                      </p>
-                      <CurrencyIcon type="primary" />
-                    </div>
-                    <p className={`${styles.name} text text_type_main-small`}>
-                      {bun.name}
+                <li
+                  className={styles.card}
+                  key={bun._id}
+                  id={bun._id}
+                  onClick={openModal}
+                >
+                  <img src={bun.image} alt={bun.name} className="ml-4 mr-4" />
+                  <div className={`${styles.price} mt-1 mb-1`}>
+                    <p className="text text_type_digits-default mr-1">
+                      {bun.price}
                     </p>
-                    <Counter count={1} size="default" />
-                  </li>
-                </>
+                    <CurrencyIcon type="primary" />
+                  </div>
+                  <p className={`${styles.name} text text_type_main-small`}>
+                    {bun.name}
+                  </p>
+                  <Counter count={1} size="default" />
+                </li>
               );
             })}
           </ul>
@@ -86,30 +80,28 @@ function BurgerIngredients(props) {
           <ul className={`${styles.list} mt-6 ml-4 mb-10`}>
             {sauces.map((sauce) => {
               return (
-                <>
-                  <li
-                    className={styles.card}
-                    key={sauce._id}
-                    id={sauce._id}
-                    onClick={openModal}
-                  >
-                    <img
-                      src={sauce.image}
-                      alt={sauce.name}
-                      className="ml-4 mr-4"
-                    ></img>
-                    <div className={`${styles.price} mt-1 mb-1`}>
-                      <p className="text text_type_digits-default mr-1">
-                        {sauce.price}
-                      </p>
-                      <CurrencyIcon type="primary" />
-                    </div>
-                    <p className={`${styles.name} text text_type_main-small`}>
-                      {sauce.name}
+                <li
+                  className={styles.card}
+                  key={sauce._id}
+                  id={sauce._id}
+                  onClick={openModal}
+                >
+                  <img
+                    src={sauce.image}
+                    alt={sauce.name}
+                    className="ml-4 mr-4"
+                  />
+                  <div className={`${styles.price} mt-1 mb-1`}>
+                    <p className="text text_type_digits-default mr-1">
+                      {sauce.price}
                     </p>
-                    <Counter count={1} size="default" />
-                  </li>
-                </>
+                    <CurrencyIcon type="primary" />
+                  </div>
+                  <p className={`${styles.name} text text_type_main-small`}>
+                    {sauce.name}
+                  </p>
+                  <Counter count={1} size="default" />
+                </li>
               );
             })}
           </ul>
@@ -117,61 +109,40 @@ function BurgerIngredients(props) {
           <ul className={`${styles.list} mt-6 ml-4 mb-10`}>
             {mains.map((main) => {
               return (
-                <>
-                  <li
-                    className={styles.card}
-                    key={main._id}
-                    id={main._id}
-                    onClick={openModal}
-                  >
-                    <img
-                      src={main.image}
-                      alt={main.name}
-                      className="ml-4 mr-4"
-                    ></img>
-                    <div className={`${styles.price} mt-1 mb-1`}>
-                      <p className="text text_type_digits-default mr-1">
-                        {main.price}
-                      </p>
-                      <CurrencyIcon type="primary" />
-                    </div>
-                    <p className={`${styles.name} text text_type_main-small`}>
-                      {main.name}
+                <li
+                  className={styles.card}
+                  key={main._id}
+                  id={main._id}
+                  onClick={openModal}
+                >
+                  <img src={main.image} alt={main.name} className="ml-4 mr-4" />
+                  <div className={`${styles.price} mt-1 mb-1`}>
+                    <p className="text text_type_digits-default mr-1">
+                      {main.price}
                     </p>
-                    <Counter count={1} size="default" />
-                  </li>
-                </>
+                    <CurrencyIcon type="primary" />
+                  </div>
+                  <p className={`${styles.name} text text_type_main-small`}>
+                    {main.name}
+                  </p>
+                  <Counter count={1} size="default" />
+                </li>
               );
             })}
           </ul>
         </div>
       </div>
       {open && (
-        <ModalOverlay type="ingredient" info={popup} close={closeModal}>
-          Детали ингредиента
-        </ModalOverlay>
+        <Modal close={closeModal} title={true}>
+          <IngredientDetails info={popup}></IngredientDetails>
+        </Modal>
       )}
     </>
   );
 }
 
 BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string,
-      name: PropTypes.string,
-      type: PropTypes.string,
-      proteins: PropTypes.number,
-      fat: PropTypes.number,
-      carbohydrates: PropTypes.number,
-      calories: PropTypes.number,
-      price: PropTypes.number,
-      image: PropTypes.string,
-      image_mobile: PropTypes.string,
-      image_large: PropTypes.string,
-      __v: PropTypes.number,
-    }).isRequired
-  ).isRequired,
+  ingredients: PropTypes.arrayOf(typeIngredient),
 };
 
 export default BurgerIngredients;

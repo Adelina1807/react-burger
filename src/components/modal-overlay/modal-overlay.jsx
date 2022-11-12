@@ -1,9 +1,5 @@
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import styles from "./modal-overlay.module.css";
-import Modal from "../modal/modal";
-
-const modalRoot = document.getElementById("root");
 
 function ModalOverlay(props) {
   const clickOverlay = (e) => {
@@ -12,22 +8,16 @@ function ModalOverlay(props) {
     }
   };
 
-  return ReactDOM.createPortal(
-    <>
-      <div className={styles.popup} onClick={clickOverlay}>
-        <Modal info={props.info} close={props.close} type={props.type}>
-          {props.children}
-        </Modal>
-      </div>
-    </>,
-    modalRoot
+  return (
+    <div className={styles.popup} onClick={clickOverlay}>
+      {props.children}
+    </div>
   );
 }
 
 ModalOverlay.propTypes = {
-  type: PropTypes.string,
-  close: PropTypes.func,
-  info: PropTypes.object,
+  close: PropTypes.func.isRequired,
+  children: PropTypes.element.isRequired,
 };
 
 export default ModalOverlay;
