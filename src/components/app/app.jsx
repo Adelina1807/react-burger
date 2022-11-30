@@ -1,23 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { useEffect, useState } from "react";
 import styles from "./app.module.css";
 import AppHeader from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { CART } from "../../utils/data";
+import { getIngredients } from "../../utils/burger-api";
 
-class App extends React.Component {
-  render() {
-    return (
-      <>
-        <AppHeader />
-        <main className={styles.main}>
-          <BurgerIngredients cart={CART} />
-          <BurgerConstructor cart={CART} />
-        </main>
-      </>
-    );
-  }
+function App() {
+  const [ingredients, setIngredients] = useState([]);
+
+  useEffect(() => {
+    getIngredients()
+      .then((res) => {
+        setIngredients(res.data);
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
+  return (
+    <>
+      <AppHeader />
+      <main className={styles.main}>
+        <BurgerIngredients ingredients={ingredients} />
+        <BurgerConstructor ingredients={ingredients} />
+      </main>
+    </>
+  );
 }
 
 export default App;
