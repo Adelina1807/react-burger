@@ -92,7 +92,7 @@ function OrderDetails({ info }) {
 
 OrderDetails.propTypes = {
   info: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+    id: PropTypes.number.isRequired,
     status: PropTypes.string.isRequired,
     phrase: PropTypes.string.isRequired,
   }).isRequired,

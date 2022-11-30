@@ -7,6 +7,7 @@ import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import { IngredientsContext } from "../../utils/ingredientsContext";
+import { sendCart } from "../../utils/burger-api";
 
 const emptyCart = {
   ingredients: [],
@@ -22,6 +23,8 @@ function addIngredient(cart, ingredient) {
         price: cart.price + 2 * ingredient.price,
         bun: true,
       };
+    } else {
+      return { ...cart };
     }
   } else {
     return {
@@ -43,12 +46,20 @@ function BurgerConstructor() {
   };
 
   const openModal = () => {
-    setOpen(true);
-    setPopup({
-      id: "034536",
-      status: "Ваш заказ начали готовить",
-      phrase: "Дождитесь готовности на орбитальной станции",
-    });
+    sendCart(
+      cart.ingredients.map((item) => {
+        return item._id;
+      })
+    )
+      .then((res) => {
+        setOpen(true);
+        setPopup({
+          id: res.order.number,
+          status: "Ваш заказ начали готовить",
+          phrase: "Дождитесь готовности на орбитальной станции",
+        });
+      })
+      .catch((e) => console.log(e));
     document.addEventListener("keydown", closeByEscape);
   };
 
@@ -63,8 +74,10 @@ function BurgerConstructor() {
   const [cart, cartDispatch] = React.useReducer(addIngredient, emptyCart);
 
   React.useEffect(() => {
-    for (let i = 0; i < ingredients.length; i += 1) {
-      cartDispatch(ingredients[i]);
+    if (cart.price === 0) {
+      for (let i = 0; i < ingredients.length; i += 1) {
+        cartDispatch(ingredients[i]);
+      }
     }
   }, [ingredients]);
 
