@@ -24,9 +24,7 @@ function Modal(props) {
     <ModalOverlay close={props.close}>
       <div className={styles.modal}>
         <div className={`${styles.header} pt-10 pr-10 pl-10`}>
-          <p className="text text_type_main-large">
-            {props.title && "Детали ингредиента"}
-          </p>
+          <p className="text text_type_main-large">{props.title}</p>
           <CloseIcon type="primary" onClick={props.close} />
         </div>
         {props.children}
@@ -38,7 +36,7 @@ function Modal(props) {
 
 Modal.propTypes = {
   close: PropTypes.func.isRequired,
-  title: PropTypes.bool.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
   children: PropTypes.element.isRequired,
 };
 

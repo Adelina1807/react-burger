@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useContext, useState } from "react";
 import styles from "./burger-constructor.module.css";
 import { DragIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
@@ -7,61 +6,98 @@ import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components
 import { Button } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
-import { typeIngredient } from "../../utils/prop-types";
+import { IngredientsContext } from "../../utils/ingredientsContext";
+import { sendCart } from "../../utils/burger-api";
 
-function BurgerConstructor(props) {
+const emptyCart = {
+  ingredients: [],
+  price: 0,
+  bun: false,
+};
+
+function addIngredient(cart, ingredient) {
+  if (ingredient.type === "bun") {
+    if (!cart.bun) {
+      return {
+        ingredients: [...cart.ingredients, ingredient],
+        price: cart.price + 2 * ingredient.price,
+        bun: true,
+      };
+    } else {
+      return { ...cart };
+    }
+  } else {
+    return {
+      ingredients: [...cart.ingredients, ingredient],
+      price: cart.price + ingredient.price,
+      bun: cart.bun,
+    };
+  }
+}
+
+function BurgerConstructor() {
   const [open, setOpen] = useState(false);
   const [popup, setPopup] = useState(null);
 
-  const closeByEscape = (evt) => {
-    if (evt.key === "Escape") {
-      closeModal();
-    }
-  };
-
   const openModal = () => {
-    setOpen(true);
-    setPopup({
-      id: "034536",
-      status: "Ваш заказ начали готовить",
-      phrase: "Дождитесь готовности на орбитальной станции",
-    });
-    document.addEventListener("keydown", closeByEscape);
+    sendCart(
+      cart.ingredients.map((item) => {
+        return item._id;
+      })
+    )
+      .then((res) => {
+        setOpen(true);
+        setPopup({
+          id: res.order.number,
+          status: "Ваш заказ начали готовить",
+          phrase: "Дождитесь готовности на орбитальной станции",
+        });
+      })
+      .catch((e) => console.log(e));
   };
 
   const closeModal = () => {
     setOpen(false);
     setPopup({});
-    document.removeEventListener("keydown", closeByEscape);
   };
 
+  const ingredients = useContext(IngredientsContext);
+
+  const [cart, cartDispatch] = React.useReducer(addIngredient, emptyCart);
+
+  React.useEffect(() => {
+    if (cart.price === 0) {
+      for (let i = 0; i < ingredients.length; i += 1) {
+        cartDispatch(ingredients[i]);
+      }
+    }
+  }, [ingredients]);
+
   const bun = React.useMemo(() => {
-    return props.ingredients.find((ingredient) => ingredient.type === "bun");
-  }, [props.ingredients]);
+    return cart.ingredients.find((ingredient) => ingredient.type === "bun");
+  }, [cart]);
   const otherIngredients = React.useMemo(() => {
-    return props.ingredients.filter((ingredient) => ingredient.type !== "bun");
-  }, [props.ingredients]);
-  const sum = React.useMemo(() => {
-    return otherIngredients.reduce(function (previousValue, elem) {
-      return previousValue + elem.price;
-    }, 0);
-  }, [otherIngredients]);
-  if (props.ingredients.length === 0) {
+    return cart.ingredients.filter((ingredient) => ingredient.type !== "bun");
+  }, [cart]);
+
+  if (ingredients.length === 0) {
     return null;
   }
   return (
     <>
       <div className="mt-25 ml-4">
         <div className={styles.section}>
-          <div className="ml-8 mb-4">
-            <ConstructorElement
-              type="top"
-              isLocked={true}
-              text={`${bun.name} (верх)`}
-              price={bun.price}
-              thumbnail={bun.image}
-            />
-          </div>
+          {cart.bun && (
+            <div className="ml-8 mb-4">
+              <ConstructorElement
+                type="top"
+                isLocked={true}
+                text={`${bun.name} (верх)`}
+                price={bun.price}
+                thumbnail={bun.image}
+              />
+            </div>
+          )}
           <ul className={styles.main}>
             {otherIngredients.map((item, index) => {
               return (
@@ -76,18 +112,20 @@ function BurgerConstructor(props) {
               );
             })}
           </ul>
-          <div className="ml-8 mt-4">
-            <ConstructorElement
-              type="bottom"
-              isLocked={true}
-              text={`${bun.name} (низ)`}
-              price={bun.price}
-              thumbnail={bun.image}
-            />
-          </div>
+          {cart.bun && (
+            <div className="ml-8 mt-4">
+              <ConstructorElement
+                type="bottom"
+                isLocked={true}
+                text={`${bun.name} (низ)`}
+                price={bun.price}
+                thumbnail={bun.image}
+              />
+            </div>
+          )}
           <div className={`${styles.total} mt-10`}>
             <p className={`${styles.price} text text_type_digits-medium`}>
-              {sum + bun.price * 2}
+              {cart.price}
             </p>
             <CurrencyIcon type="primary" />
             <div className="ml-10">
@@ -106,9 +144,5 @@ function BurgerConstructor(props) {
     </>
   );
 }
-
-BurgerConstructor.propTypes = {
-  ingredients: PropTypes.arrayOf(typeIngredient),
-};
 
 export default BurgerConstructor;

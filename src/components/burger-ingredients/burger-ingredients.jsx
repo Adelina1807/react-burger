@@ -1,40 +1,40 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useContext, useState } from "react";
 import styles from "./burger-ingredients.module.css";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { typeIngredient } from "../../utils/prop-types";
+import { IngredientsContext } from "../../utils/ingredientsContext";
 
-function BurgerIngredients(props) {
+function BurgerIngredients() {
   const [popup, setPopup] = useState(null);
   const [open, setOpen] = useState(false);
 
+  const ingredients = useContext(IngredientsContext);
   const openModal = (e) => {
     setOpen(true);
-    const info = props.ingredients.find((item) => {
+    const info = ingredients.find((item) => {
       return item._id === e.currentTarget.id;
     });
     setPopup(info);
   };
 
   const closeModal = () => {
-    setOpen(false);
+    setOpen(null);
     setPopup({});
   };
 
   const [current, setCurrent] = React.useState("bun");
   const buns = React.useMemo(() => {
-    return props.ingredients.filter((item) => item.type === "bun");
-  }, [props.ingredients]);
+    return ingredients.filter((item) => item.type === "bun");
+  }, [ingredients]);
   const mains = React.useMemo(() => {
-    return props.ingredients.filter((item) => item.type === "main");
-  }, [props.ingredients]);
+    return ingredients.filter((item) => item.type === "main");
+  }, [ingredients]);
   const sauces = React.useMemo(() => {
-    return props.ingredients.filter((item) => item.type === "sauce");
-  }, [props.ingredients]);
+    return ingredients.filter((item) => item.type === "sauce");
+  }, [ingredients]);
   return (
     <>
       <div className={`${styles.section} mt-10`}>
@@ -133,16 +133,12 @@ function BurgerIngredients(props) {
         </div>
       </div>
       {open && (
-        <Modal close={closeModal} title={true}>
+        <Modal close={closeModal} title="Детали заказа">
           <IngredientDetails info={popup}></IngredientDetails>
         </Modal>
       )}
     </>
   );
 }
-
-BurgerIngredients.propTypes = {
-  ingredients: PropTypes.arrayOf(typeIngredient),
-};
 
 export default BurgerIngredients;
