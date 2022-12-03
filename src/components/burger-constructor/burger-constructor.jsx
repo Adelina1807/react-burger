@@ -39,12 +39,6 @@ function BurgerConstructor() {
   const [open, setOpen] = useState(false);
   const [popup, setPopup] = useState(null);
 
-  const closeByEscape = (evt) => {
-    if (evt.key === "Escape") {
-      closeModal();
-    }
-  };
-
   const openModal = () => {
     sendCart(
       cart.ingredients.map((item) => {
@@ -60,13 +54,11 @@ function BurgerConstructor() {
         });
       })
       .catch((e) => console.log(e));
-    document.addEventListener("keydown", closeByEscape);
   };
 
   const closeModal = () => {
     setOpen(false);
     setPopup({});
-    document.removeEventListener("keydown", closeByEscape);
   };
 
   const ingredients = useContext(IngredientsContext);

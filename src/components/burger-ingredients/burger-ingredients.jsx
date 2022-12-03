@@ -133,7 +133,7 @@ function BurgerIngredients() {
         </div>
       </div>
       {open && (
-        <Modal close={closeModal} title={true}>
+        <Modal close={closeModal} title="Детали заказа">
           <IngredientDetails info={popup}></IngredientDetails>
         </Modal>
       )}
